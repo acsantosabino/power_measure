@@ -31,7 +31,7 @@ if __name__ == '__main__':
     buffersize = 1200 #Tamanho do buffer
     opt = parser.parse_args()
     sampleRate = 600.0*60.0
-    sensor_delay = 10**(-3) #atraso entre corrente e tensão
+    sensor_delay = 0.2 * 10**(-3) #atraso entre corrente e tensão
 
     if opt.fake_measure :
         from fake_measure import *
@@ -55,8 +55,8 @@ if __name__ == '__main__':
 
     voltage = Measure('voltage', "AIN6", buffersize) #Variavel de tensao
     current = Measure('current', "AIN1", buffersize) #Variavel de corrente
-    voltage.amp = (311/0.38)  
-    current.amp = (5/0.2964)
+    voltage.amp = (311/0.43)
+    current.amp = (7/0.61)
 
     if opt.fake_measure : current.form = 'fwr'
 

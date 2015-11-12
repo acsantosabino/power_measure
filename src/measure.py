@@ -41,7 +41,7 @@ class Measure(deque):
 
 #Funcao de leitura das portas analogicas
   def readPort(self, ch_read, d):
-    if d>0:
+    if d>=0:
         self.extend((np.array(ch_read[self.adcPort][d:])-self.zero)*self.amp*adc_prop)
     else :
         self.extend((np.array(ch_read[self.adcPort][:d])-self.zero)*self.amp*adc_prop)
@@ -101,8 +101,9 @@ def ConsumeCalc(voltage,current):
 def threadRead(voltage, current, pruIo, d):
   
   ch = pruIo.read_adc_ch()
-  voltage.readPort(ch, d)
-  current.readPort(ch, (-1*d))
+  voltage.readPort(ch, (-1*d))
+  current.readPort(ch, (d))
+  print ch, voltage, current
   dataraw = {}
   datacalc = ConsumeCalc(voltage,current)
 
@@ -133,6 +134,7 @@ def threadRead(voltage, current, pruIo, d):
   # Make the y-axis label, ticks and tick labels match the line color.
   ax1.set_ylabel('Voltage[V]', color='b')
   ax1.tick_params('y', colors='b')
+  plt.axis('tight')
 
   ax2 = ax1.twinx()
   ax2.plot(t, list(current), 'r')
