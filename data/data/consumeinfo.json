@@ -1,0 +1,9 @@
+{
+    "current_rms": [ 2 ],
+    "current_mean": [ 3 ],
+    "voltage_rms": [ 2 ],
+    "voltage_mean": [ 3 ],
+    "power_apparent": [ 500 ],
+    "power_active": [ 500 ],
+    "power_factor": [ 1 ]
+}
