@@ -10,7 +10,9 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 import json
 
-import mraa
+import Adafruit_BBIO.ADC as ADC
+
+ADC.setup()
 
 plotly.tools.set_credentials_file(username='TCC2016', api_key='wfo2kqaa3f')
 
@@ -26,7 +28,7 @@ class Measure(deque):
   def __init__(self, name, adcPort, gpioPort, size=0):
     super(Measure, self).__init__(maxlen=size)
     self.name = name
-    self.adcPort = mraa.Aio(adcPort)
+    self.adcPort = adcPort
     self.ts = (10**6)*(1.0/(size*60.0))
 
 #Realiza a media da variavel
@@ -73,7 +75,7 @@ class Measure(deque):
       datafile = open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'w+')
       datafile.write(json.dumps(dataraw))
       return 1
-    value = self.amp*2*((self.adcPort.read()/1023.0)-0.5)
+    value = self.amp*2*(ADC.read(self.adcPort)-0.5)
     self.num_elem += 1
     self.append(value)
     return 0

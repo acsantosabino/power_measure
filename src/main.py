@@ -32,8 +32,8 @@ if __name__ == '__main__':
         from measure import *
 
     buffersize = (1200) #Tamanho do buffer
-    voltage = Measure('voltage', 0, 7,buffersize) #Variavel de tensao
-    current = Measure('current', 1, 8, buffersize) #Variavel de corrente
+    voltage = Measure('voltage', "AIN0", 7,buffersize) #Variavel de tensao
+    current = Measure('current', "AIN1", 8, buffersize) #Variavel de corrente
     voltage.amp = 235.4
     current.amp = 7.6
 
