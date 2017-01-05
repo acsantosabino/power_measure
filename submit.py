@@ -11,6 +11,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import json
+from src.fake_measure import *
 
 from tornado.options import define, options
 from datetime import datetime
@@ -88,17 +89,21 @@ class ConsumeHistoryHandler(tornado.web.RequestHandler):
 #Configures the threads ans how the website should interpret requisitions from the website
 if __name__ == '__main__':
 
+    voltage = Measure("voltage", 0, 0, size=100)
+    current = Measure("current", 0, 0, size=100)
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[(r'/', IndexHandler),
                   (r'/api/devinfo', DevInfoHandler),
                   (r'/api/history', HistoryHandler),
                   (r'/api/consumehistory', ConsumeHistoryHandler),
-                  (r"/fig/(.*\.svg)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "fig")}),
+                  (r"/fig/(.*\.png)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "fig")}),
                   (r'/css/(.*\.css)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "templates/css")},),
                   (r'/js/(.*\.js)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "templates/js")},)],
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
     )
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(options.port)
-    tornado.ioloop.IOLoop.instance().start()
+    server = tornado.ioloop.IOLoop.instance()
+    tornado.ioloop.PeriodicCallback(lambda: threadRead(voltage, current),2000).start()
+    server.start()

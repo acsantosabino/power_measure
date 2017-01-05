@@ -75,7 +75,7 @@ class Measure(deque):
       datafile = open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'w+')
       datafile.write(json.dumps(dataraw))
       return 1
-    value = self.amp*2*(ADC.read(self.adcPort)-0.5)
+    value = np.sin(2*np.pi*self.freq*self.num_elem)#self.amp*2*(ADC.read(self.adcPort)-0.5)
     self.num_elem += 1
     self.append(value)
     return 0
