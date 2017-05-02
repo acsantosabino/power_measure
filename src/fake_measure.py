@@ -137,7 +137,7 @@ def threadRead(voltage, current):
         with open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/consumeinfo.json')), 'w+') as datafile:
           datafile.write(json.dumps(datacalc))
 
-        print "PLOT", datetime.today()        
+        print "PLOT", datetime.today()
         t = np.arange(0,voltage.maxlen)*voltage.ts
         voltage_trace = go.Scatter(
           x = t,

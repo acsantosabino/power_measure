@@ -20,7 +20,7 @@ class IndexHandler(tornado.web.RequestHandler):
 class DevInfoHandler(tornado.web.RequestHandler):
     def get(self):
         try:
-          with open('../data/devinfo.json', 'r') as file:
+          with open(os.path.join(os.path.dirname(__file__),'../data/devinfo.json'), 'r') as file:
               data = json.loads(file.read())
           self.set_header('Cache-Control', 'no-cache')
           self.set_header('Access-Control-Allow-Origin', '*')
@@ -34,7 +34,7 @@ class DevInfoHandler(tornado.web.RequestHandler):
     def post(self):
         data = self.request.body_arguments
 
-        with open('../data/devinfo.json', 'w+') as file:
+        with open(os.path.join(os.path.dirname(__file__),'../data/devinfo.json'), 'w+') as file:
             file.write(json.dumps(data, indent=4, separators=(',', ': ')))
         self.set_header('Cache-Control', 'no-cache')
         self.set_header('Access-Control-Allow-Origin', '*')
@@ -46,7 +46,7 @@ class HistoryHandler(tornado.web.RequestHandler):
         data = {}
         result = []
         try:
-          with open(datetime.today().strftime('../data/%Y%m%d.json'), 'r') as file:
+          with open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'r') as file:
               data = json.loads(file.read())
           self.set_header('Cache-Control', 'no-cache')
           self.set_header('Access-Control-Allow-Origin', '*')
@@ -67,7 +67,7 @@ class ConsumeHistoryHandler(tornado.web.RequestHandler):
     def get(self):
         result = {};
         try:
-          with open('../data/consumeinfo.json', 'r') as file:
+          with open(os.path.join(os.path.dirname(__file__),'../data/consumeinfo.json'), 'r') as file:
               data = json.loads(file.read())
           self.set_header('Cache-Control', 'no-cache')
           self.set_header('Access-Control-Allow-Origin', '*')
