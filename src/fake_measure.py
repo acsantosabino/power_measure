@@ -19,6 +19,7 @@ class Measure(deque):
   def __init__(self, name, adcPort, gpioPort, size=0):
     super(Measure, self).__init__(maxlen=size)
     self.name = name
+    self.form = 'sin'
     self.ts = (10**6)*(1.0/(size*60.0))
 
 #Realiza a media da variavel
@@ -38,6 +39,15 @@ class Measure(deque):
   def add(self, value):
     self.num_elem += 1
     self.append(value)
+
+  def signal_gen(self):
+    sinus = np.sin(2 * np.pi * self.freq * (self.num_elem%self.maxlen) * self.ts/(10**6))
+    return {
+      'sin' : self.amp * sinus,
+      'hwr' : self.amp * (sinus if sinus >0 else 0),
+      'fwr' : self.amp * np.abs(sinus),
+      'sqr' : self.amp * ( 1.0 if self.num_elem < self.maxlen/2 else -1.0)
+    }.get(self.form)
 
 #Funcao de leitura das portas analogicas
   def readPort(self):
@@ -65,7 +75,7 @@ class Measure(deque):
       datafile = open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'w+')
       datafile.write(json.dumps(dataraw))
       return 1
-    value = self.amp * np.sin(2 * np.pi * self.freq * (self.num_elem%self.maxlen) * self.ts/(10**6))
+    value = self.signal_gen()
     self.num_elem += 1
     self.append(value)
     return 0
@@ -141,15 +151,18 @@ def threadRead(voltage, current):
         # Make the y-axis label, ticks and tick labels match the line color.
         ax1.set_ylabel('Voltage[V]', color='b')
         ax1.tick_params('y', colors='b')
-
         ax2 = ax1.twinx()
         ax2.plot(t, list(current), 'r')
         ax2.set_ylabel('Current[A]', color='r')
         ax2.tick_params('y', colors='r')
 
-        plt.axis('tight')
         plt.title('Instant Consuption')
+        plt.axis('tight')
+        ax1.set_ylim([1.2*min(voltage), 1.2*max(voltage)])
+        ax2.set_ylim([1.2*min(current) if min(current)!=0 else -0.2*max(current), 1.2*max(current)])
+
         fig.savefig(os.path.join(os.path.dirname(__file__),'../fig/ConsumeInfo.svg'), transparent=True)
+        plt.close(fig)
         legend = []
         ymax = 0
 
@@ -169,5 +182,6 @@ def threadRead(voltage, current):
         plt.ylim(0,ymax*1.2)
         lgd = plt.legend(legend, loc='center left', bbox_to_anchor=(1, 0.5))
         fig.savefig(os.path.join(os.path.dirname(__file__),'../fig/History_test2.svg'), transparent=True, bbox_extra_artists=(lgd,), bbox_inches='tight')
+        plt.close(fig)
         return None
 

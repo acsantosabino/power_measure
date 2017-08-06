@@ -37,6 +37,8 @@ if __name__ == '__main__':
     voltage.amp = 235.4
     current.amp = 7.6
 
+    if opt.fake_measure : current.form = 'hwr'
+
     app = tornado.web.Application(
         handlers=[(r'/', IndexHandler),
                   (r'/api/devinfo', DevInfoHandler),
@@ -46,7 +48,7 @@ if __name__ == '__main__':
                   (r"/fig/(.*\.svg)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
                   (r'/css/(.*\.css)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../templates/css")},),
                   (r'/js/(.*\.js)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../templates/js")},)],
-        template_path=os.path.join(os.path.dirname(__file__), "../templates"),
+        template_path=os.path.join(os.path.dirname(__file__), "../templates"), debug=True
     )
 
     http_server = tornado.httpserver.HTTPServer(app)
