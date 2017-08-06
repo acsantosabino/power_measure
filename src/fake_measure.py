@@ -5,15 +5,9 @@ import numpy as np
 import time, json
 from datetime import datetime
 import sys
-import plotly
-import plotly.plotly as py
-from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-import plotly.graph_objs as go
+import matplotlib.pyplot as plt
 import json
 
-plotly.tools.set_credentials_file(username='TCC2016', api_key='wfo2kqaa3f')
-
-historyurl = "https://plot.ly/~TCC2016/6.embed"
 
 #Criacao da classe de leitura dos pinos analogicos
 class Measure(deque):
@@ -26,7 +20,7 @@ class Measure(deque):
     super(Measure, self).__init__(maxlen=size)
     self.name = name
     self.ts = (10**6)*(1.0/(size*60.0))
-  
+
 #Realiza a media da variavel
   @property
   def average(self):
@@ -139,52 +133,41 @@ def threadRead(voltage, current):
 
         print "PLOT", datetime.today()
         t = np.arange(0,voltage.maxlen)*voltage.ts
-        voltage_trace = go.Scatter(
-          x = t,
-          y = list(voltage),
-          name = 'Voltage'
-        )
-        
-        current_trace = go.Scatter(
-          x = t,
-          y = list(current),
-          name = 'Current',
-          yaxis = 'y2' 
-        )
-        
-        plot = [voltage_trace, current_trace]
-        
-        # Edit the layout
-        layout = dict(title = 'Instant Consumption',
-              xaxis = dict(title = 'Time in microseconds'),
-              yaxis = dict(title = 'Voltage[V]'),
-              yaxis2 = dict(title = 'Current[A]',
-                  overlaying='y',
-                  side='right',
-                  range = [-10,10]),
-              paper_bgcolor='rgba(0,0,0,0)',
-              plot_bgcolor='rgba(0,0,0,0)'
-        )
-        
-        # Plot and embed in ipython notebook!
-        fig = dict(data=plot, layout=layout)
-        py.image.save_as(fig, filename=os.path.join(os.path.dirname(__file__),'../fig/ConsumeInfo.png'))
-        data = []
-        
+        # Plot 1
+        fig, ax1 = plt.subplots()
+        ax1.grid(True)
+        ax1.plot(t, list(voltage))
+        ax1.set_xlabel('Time in microseconds')
+        # Make the y-axis label, ticks and tick labels match the line color.
+        ax1.set_ylabel('Voltage[V]', color='b')
+        ax1.tick_params('y', colors='b')
+
+        ax2 = ax1.twinx()
+        ax2.plot(t, list(current), 'r')
+        ax2.set_ylabel('Current[A]', color='r')
+        ax2.tick_params('y', colors='r')
+
+        plt.axis('tight')
+        plt.title('Instant Consuption')
+        fig.savefig(os.path.join(os.path.dirname(__file__),'../fig/ConsumeInfo.svg'), transparent=True)
+        legend = []
+        ymax = 0
+
+        # Plot 2
+        fig = plt.figure()
+        plt.title('Consumption History')
+        plt.grid(True)
+
         for key in dataraw.keys():
-          data.append( go.Scatter(
-            y = dataraw[key],
-            x = np.linspace(0,len(dataraw[key]),len(dataraw[key])),
-            name = key
-          ))
-        
-        layout2 = dict(title = 'Consumption History',
-              xaxis = dict(title = 'Samples'),
-              yaxis = dict(title = 'Power, Voltage, Current'),
-              paper_bgcolor='rgba(0,0,0,0)',
-              plot_bgcolor='rgba(0,0,0,0)'
-        )
-        fig = dict(data=data, layout=layout2)
-        historyurl = py.image.save_as(fig, filename=os.path.join(os.path.dirname(__file__),'../fig/History_test2.png'))
-        print historyurl
+          y = dataraw[key]
+          x = np.linspace(0,len(dataraw[key]),len(dataraw[key]))
+          legend.append(key.replace('_',' ').title())
+          ymax = max(ymax, max(y))
+          plt.plot(x, y)
+
+        plt.axis('tight')
+        plt.ylim(0,ymax*1.2)
+        lgd = plt.legend(legend, loc='center left', bbox_to_anchor=(1, 0.5))
+        fig.savefig(os.path.join(os.path.dirname(__file__),'../fig/History_test2.svg'), transparent=True, bbox_extra_artists=(lgd,), bbox_inches='tight')
         return None
+

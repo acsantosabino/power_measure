@@ -43,6 +43,7 @@ if __name__ == '__main__':
                   (r'/api/history', HistoryHandler),
                   (r'/api/consumehistory', ConsumeHistoryHandler),
                   (r"/fig/(.*\.png)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
+                  (r"/fig/(.*\.svg)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
                   (r'/css/(.*\.css)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../templates/css")},),
                   (r'/js/(.*\.js)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../templates/js")},)],
         template_path=os.path.join(os.path.dirname(__file__), "../templates"),
