@@ -5,10 +5,17 @@ import numpy as np
 import time, json
 from datetime import datetime
 import sys
+
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import json
 
 import Adafruit_BBIO.ADC as ADC
+
+ADC.setup()
 
 #Criacao da classe de leitura dos pinos analogicos
 class Measure(deque):
