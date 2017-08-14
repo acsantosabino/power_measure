@@ -9,15 +9,20 @@ var Graph = React.createClass({
   },
   handleImageErrored() {
     this.setState({ imageStatus: 'failed to load' });
+  }, 
+  graphupdate: function() {
+      var myImageElement = document.getElementById(this.props.id);
+      console.log('Imgurl: ', this.props.url + '?rand=' + Math.random());
+      myImageElement.src = this.props.url + '?rand=' + Math.random();
   },
   componentDidMount: function() {
-    this.render();
-    setInterval(this.render, this.props.pollInterval);
+    this.graphupdate();
+    setInterval( this.graphupdate, this.props.pollInterval);
   },
   render: function() {
     return (
       <div className="box graph">
-        <img src={this.props.url}/>
+        <img src={this.props.url} id={this.props.id}/>
       </div>
     );
   }

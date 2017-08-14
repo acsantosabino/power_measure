@@ -9,10 +9,10 @@ var Measure = React.createClass({
     return (
       <div className="center">
         <MyTable title="History" url="/api/history" pollInterval="10000" />
-        <Graph url="/fig/History_test2.svg" pollInterval="20000"/>
+        <Graph url="/fig/History_test2.svg" pollInterval="20000" id="graph1"/>
         <Device url="/api/devinfo" />
         <ConsumeInfo url="/api/consumehistory" pollInterval="20000"/>
-        <Graph url="/fig/ConsumeInfo.svg" pollInterval="20000"/>
+        <Graph url="/fig/ConsumeInfo.svg" pollInterval="20000" id="graph2"/>
         <div clasName="clear"></div>
       </div>
     );
