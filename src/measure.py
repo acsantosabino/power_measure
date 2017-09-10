@@ -22,6 +22,7 @@ class Measure(deque):
   num_elem = 0
   freq = 60
   amp = 5
+  zero = 0.5
   
 #Inicializacao da porta analogica
   def __init__(self, name, adcPort, gpioPort, size=0):
@@ -74,10 +75,20 @@ class Measure(deque):
       datafile = open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'w+')
       datafile.write(json.dumps(dataraw))
       return 1
-    value = self.amp*2*(ADC.read(self.adcPort)-0.5)
+    value = self.amp*2*(ADC.read(self.adcPort)-self.zero)
     self.num_elem += 1
     self.append(value)
     return 0
+
+#Funcao de leitura das portas analogicas
+  def calibrate(self):
+    calib = []
+    for x in range(self.maxlen):
+      calib.append(ADC.read(self.adcPort))
+
+    self.zero = np.mean(calib)
+    print self.name, " max: ", max(calib)
+      
 
 #Realiza o rms da potencia
 def power_apparent(buffer1, buffer2):

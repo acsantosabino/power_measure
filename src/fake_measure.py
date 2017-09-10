@@ -13,6 +13,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import json
 
+forms = deque([ 'sin', 'hwr', 'fwr', 'sqr'])
 
 #Criacao da classe de leitura dos pinos analogicos
 class Measure(deque):
@@ -92,6 +93,7 @@ def power_apparent(buffer1, buffer2):
 #Realiza o calculo da potencia ativa
 def power_active(buffer1, buffer2):
   sum_power = sum(np.array(buffer1) * np.array(buffer2))
+  print "sum_power: ", sum_power
   if len(buffer1) > len(buffer2):
     return sum_power/len(buffer2)
   else:
@@ -128,6 +130,9 @@ def threadRead(voltage, current):
     if (run_flag) :
         dataraw = {}
         datacalc = ConsumeCalc(voltage,current)
+
+        #current.form = forms[0]
+        forms.rotate(1)
 
         with open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'r+') as datafile:
           dataraw = json.load(datafile)

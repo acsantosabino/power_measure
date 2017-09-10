@@ -79,3 +79,6 @@ class ConsumeHistoryHandler(tornado.web.RequestHandler):
           self.set_header('Access-Control-Allow-Origin', '*')
           self.write(json.dumps("[{ current_rms: [], current_mean: [], voltage_rms: [], voltage_mean: [], power_apparent: [], power_active: [], power_factor: []}]"))
 
+class NoCacheStaticFileHandler(tornado.web.StaticFileHandler):
+    def set_extra_headers(self, path):
+        self.set_header("Cache-control",  'no-store, no-cache, must-revalidate, max-age=0')

@@ -32,20 +32,24 @@ if __name__ == '__main__':
         from measure import *
 
     buffersize = (1200) #Tamanho do buffer
-    voltage = Measure('voltage', "AIN0", 7,buffersize) #Variavel de tensao
-    current = Measure('current', "AIN1", 8, buffersize) #Variavel de corrente
+    voltage = Measure('voltage', "AIN6", 7,buffersize) #Variavel de tensao
+    current = Measure('current', "AIN0", 8, buffersize) #Variavel de corrente
     voltage.amp = 235.4
     current.amp = 7.6
 
-    if opt.fake_measure : current.form = 'hwr'
+    if opt.fake_measure : current.form = 'fwr'
+
+    else :
+      voltage.calibrate()
+      current.calibrate()
 
     app = tornado.web.Application(
         handlers=[(r'/', IndexHandler),
                   (r'/api/devinfo', DevInfoHandler),
                   (r'/api/history', HistoryHandler),
                   (r'/api/consumehistory', ConsumeHistoryHandler),
-                  (r"/fig/(.*\.png)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
-                  (r"/fig/(.*\.svg)", tornado.web.StaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
+                  (r"/fig/(.*\.png)", NoCacheStaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
+                  (r"/fig/(.*\.svg)", NoCacheStaticFileHandler,{'path': os.path.join(os.path.dirname(__file__), "../fig")}),
                   (r'/css/(.*\.css)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../templates/css")},),
                   (r'/js/(.*\.js)',tornado.web.StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), "../templates/js")},)],
         template_path=os.path.join(os.path.dirname(__file__), "../templates"), debug=True
