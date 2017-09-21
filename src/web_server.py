@@ -61,7 +61,7 @@ class HistoryHandler(tornado.web.RequestHandler):
         except:
           self.set_header('Cache-Control', 'no-cache')
           self.set_header('Access-Control-Allow-Origin', '*')
-          self.write(json.dumps("[{rms: [], mean: []}]"))
+          self.write(json.dumps("{power_factor: 0.0, current_mean: 0.0, power_apparent: 0.0, power_active: 0.0, current_rms: 0.0, voltage_rms: 0.0, voltage_mean: 0.0}"))
 
 class ConsumeHistoryHandler(tornado.web.RequestHandler):
     def get(self):
