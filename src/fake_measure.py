@@ -120,7 +120,7 @@ def usleep(delay):
 
 
 #Thread de leitura da tensao e da corrente
-def threadRead(voltage, current):
+def threadRead(voltage, current, pruIo=None):
   run_flag = 0
   print "start read", datetime.today()
   while(~run_flag):

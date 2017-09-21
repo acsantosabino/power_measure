@@ -47,21 +47,18 @@ cdef class Pruio:
         for i in range(samps):
             v.append(self._c_pruio.Adc.Value[i+1])
 
-        print v
         return v
 
     def read_adc_ch(self):
 
         data = self.get_adc_actived_ch()
-        size = 8 if self._c_pruio.Adc.Samples>1 else self._c_pruio.Adc.Samples * len(data)
+        data_size = 8 if self._c_pruio.Adc.Samples==1 else self._c_pruio.Adc.Samples
         data_map = data.keys()
         data_map.sort()
-        value = self.get_adc_value(size)
+        value = self.get_adc_value(data_size)
 
-        print self.mask, data, data_map
-
-        for i in value:
-            data[data_map[value.index(i)%len(data)]].append(i)
+        for i in range(data_size):
+            data[data_map[i%len(data)]].append(value[i])
 
         return data
 

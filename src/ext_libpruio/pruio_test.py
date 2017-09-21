@@ -10,7 +10,7 @@ SaD = 0                 #sample delay for default steps (defaults to 0)
 Stp = 9                 #step index (0=step 0=>charge step, 1=step 1 (=> AIN-0 by default), ...., 17 = idle step)
 ChN = 0                 #Channel Number to scan (0 = AIN-0, 1= AIN-1, ....)
 Mds = 4                 #modus for output (default to 4 = 16 bit)
-samp = 12             #number of samples in the files (per step)
+samp = 50             #number of samples in the files (per step)
 tmr = 1000000000.0/(600.0*60.0) #1ms! sampling rate in ns (10000 -> 100 kHz)
 
 
@@ -24,6 +24,9 @@ print ch
 print "rb test 1200"
 adc.config(samp, 0b010000100, tmr, Mds)
 adc.rb_start()
-time.sleep(0.5)
+time.sleep(2)
 ch = adc.read_adc_ch()
 print ch
+
+for key in ch.keys():
+  print key, "length", len(ch[key])
