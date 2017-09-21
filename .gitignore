@@ -4,5 +4,9 @@ __pycache__/
 *$py.class
 
 ./data
+./data/**
 ./fig
+./fig/**
+./node_modules
+./node_modules/**
 ./templates/js
