@@ -2,11 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
-./data
-./data/**
-./fig
-./fig/**
-./node_modules
-./node_modules/**
-./templates/js
+data
+fig
+node_modules
+templates/js/*.map
+src/ext_libpruio/build/
+src/ext_libpruio/pruio.c
