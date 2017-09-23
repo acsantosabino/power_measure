@@ -30,8 +30,13 @@ if __name__ == '__main__':
 
     buffersize = 1200 #Tamanho do buffer
     opt = parser.parse_args()
+    sampleRate = 600.0*60.0
+    sensor_delay = 10**(-3) #atraso entre corrente e tensão
+
     if opt.fake_measure :
         from fake_measure import *
+        d = 0
+        adc = None
     else :
         from measure import *
         from pruio import Pruio
@@ -40,9 +45,11 @@ if __name__ == '__main__':
         OpD = 0                 #open delay for default steps (default 0x98, max 0x3FFFF)
         SaD = 0                 #sample delay for default steps (defaults to 0)
         Mds = 4                 #modus for output (default to 4 = 16 bit)
-        tmr = 1000000000.0/(600.0*60.0) #1ms! sampling rate in ns (10000 -> 100 kHz)
+        tmr = 1000000000.0/sampleRate #1ms! sampling rate in ns (10000 -> 100 kHz)
+
+        d = int(sampleRate * sensor_delay) #atraso em amostras
         adc = Pruio(Act, Av, OpD, SaD)
-        adc.config(buffersize, 0b010000100, tmr, Mds)
+        adc.config(buffersize+d, 0b010000100, tmr, Mds)
         adc.rb_start()
         time.sleep(0.5)
 
@@ -55,8 +62,8 @@ if __name__ == '__main__':
 
     else :
       ch = adc.read_adc_ch()
-      voltage.calibrate(ch)
-      current.calibrate(ch)
+      voltage.calibrate(ch, d)
+      current.calibrate(ch, d)
 
     app = tornado.web.Application(
         handlers=[(r'/', IndexHandler),
@@ -73,5 +80,5 @@ if __name__ == '__main__':
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(opt.port_num)
     server = tornado.ioloop.IOLoop.instance()
-    tornado.ioloop.PeriodicCallback(lambda: threadRead(voltage, current, adc),20000).start()
+    tornado.ioloop.PeriodicCallback(lambda: threadRead(voltage, current, adc, d),20000).start()
     server.start()

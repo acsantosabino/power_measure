@@ -40,8 +40,12 @@ class Measure(deque):
     return np.sqrt(sum_sqr/len(self))
 
 #Funcao de leitura das portas analogicas
-  def readPort(self, ch_read):
-    self.extend((np.array(ch_read[self.adcPort])-self.zero)*self.amp*adc_prop)
+  def readPort(self, ch_read, d):
+    if d>0:
+        self.extend((np.array(ch_read[self.adcPort][d:])-self.zero)*self.amp*adc_prop)
+    else :
+        self.extend((np.array(ch_read[self.adcPort][:d])-self.zero)*self.amp*adc_prop)
+
     dataraw = {}
     try:
       datafile = open(os.path.join(os.path.dirname(__file__),datetime.today().strftime('../data/%Y%m%d.json')), 'r+')
@@ -64,8 +68,8 @@ class Measure(deque):
     datafile.write(json.dumps(dataraw))
 
 #Funcao de leitura das portas analogicas
-  def calibrate(self, ch_read):
-    calib = np.array(ch_read[self.adcPort])
+  def calibrate(self, ch_read, d):
+    calib = np.array(ch_read[self.adcPort][d:])
     self.zero = np.mean(calib)
 
 #Realiza o rms da potencia
@@ -94,11 +98,11 @@ def ConsumeCalc(voltage,current):
 
 
 #Thread de leitura da tensao e da corrente
-def threadRead(voltage, current, pruIo):
+def threadRead(voltage, current, pruIo, d):
   
   ch = pruIo.read_adc_ch()
-  voltage.readPort(ch)
-  current.readPort(ch)
+  voltage.readPort(ch, d)
+  current.readPort(ch, (-1*d))
   dataraw = {}
   datacalc = ConsumeCalc(voltage,current)
 

@@ -22,7 +22,7 @@ class Measure(deque):
   amp = 5
   
 #Inicializacao da porta analogica
-  def __init__(self, name, adcPort, gpioPort, size=0):
+  def __init__(self, name, adcPort, size=0):
     super(Measure, self).__init__(maxlen=size)
     self.name = name
     self.form = 'sin'
@@ -120,7 +120,7 @@ def usleep(delay):
 
 
 #Thread de leitura da tensao e da corrente
-def threadRead(voltage, current, pruIo=None):
+def threadRead(voltage, current, pruIo=None, d=0):
   run_flag = 0
   print "start read", datetime.today()
   while(~run_flag):
