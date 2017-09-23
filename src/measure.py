@@ -65,7 +65,6 @@ class Measure(deque):
 
 #Funcao de leitura das portas analogicas
   def calibrate(self, ch_read):
-    print ch_read    
     calib = np.array(ch_read[self.adcPort])
     self.zero = np.mean(calib)
 
