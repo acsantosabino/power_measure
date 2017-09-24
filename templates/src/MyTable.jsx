@@ -1,19 +1,30 @@
 var React = require("react");
 
 var TableList = React.createClass({
+  sortKeys: function(a) {
+        var keys = [];
+        for (var key in a) {
+           keys.push(key);
+        }
+        keys.sort();
+    return keys;
+  },
   render: function() {
+    var self = this;
     var tableFirstLine = this.props.data.map(function(measure, i) {
       var tableColums = [];
       if (i==0) {
-        for (var index in measure){
-          tableColums.push(<th  className="table cell">{index.replace("_"," ")}</th>);
+        var keys = self.sortKeys(measure);
+        for (var index in keys){
+          tableColums.push(<th  className="table cell">{keys[index].replace("_"," ")}</th>);
         }}
       return (<tr className="table cell">{tableColums}</tr>);
     });
     var tableLines = this.props.data.map(function(measure, i) {
       var tableColums = [];
-      for (var index in measure){
-        tableColums.push(<td className="table cell">{measure[index]}</td>);
+      var keys = self.sortKeys(measure);
+      for (var index in keys){
+        tableColums.push(<td className="table cell">{measure[keys[index]]}</td>);
       }
       return (<tr className="table cell">{tableColums}</tr>);
     });
