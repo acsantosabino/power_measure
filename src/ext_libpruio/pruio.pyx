@@ -45,7 +45,7 @@ cdef class Pruio:
         v = []
 
         for i in range(samps):
-            v.append(self._c_pruio.Adc.Value[i+1])
+            v.append(self._c_pruio.Adc.Value[i])
 
         return v
 
@@ -59,7 +59,6 @@ cdef class Pruio:
 
         for i in range(data_size):
             data[data_map[i%len(data)]].append(value[i])
-
         return data
 
     def __dealloc__(self):
